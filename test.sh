@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+. .config
+
 ./registry.sh
 
 TOTAL=0
@@ -14,7 +16,8 @@ for pass in {1..100}; do
     TOTAL=$((TOTAL + 1))
 done
 
-docker kill registry
+docker kill $REGISTRY_NAME
+docker kill $PROXY_NAME
 
 if [ $FAILED -gt 0 ]; then
     echo "FAILED $FAILED OF $TOTAL"

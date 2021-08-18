@@ -1,40 +1,45 @@
 #!/bin/bash -e
-PORT=5000
-REGISTRY=localhost:$PORT
+
+. .config
+
+REGISTRY=localhost:$REGISTRY_PORT
+PROXY=localhost:$PROXY_PORT
+ALPINE=$PROXY/library/alpine:edge
+CACHE=$REGISTRY/cachebug:buildcache
 
 # Recreate builder for clear local cache
 docker buildx rm cachebug || true
-docker buildx create --name cachebug --driver docker-container --driver-opt image=$REGISTRY/moby/buildkit:latest,network=host
+docker buildx create --name cachebug --driver docker-container --driver-opt image=$BUILDKIT_IMAGE,network=host
 docker buildx inspect cachebug --bootstrap
 
 # Create some changed file
 mkdir -p .build
-date > .build/changed.txt
+echo foo > .build/changed.txt
 
 # Run with cache-to only
 docker buildx build \
     --progress=plain \
     --builder cachebug \
-    --build-arg BASE=$REGISTRY/alpine:latest \
-    --cache-to type=registry,ref=$REGISTRY/cachebug:buildcache,mode=max \
+    --build-arg BASE=$ALPINE \
+    --cache-to type=registry,ref=$CACHE,mode=max \
     --platform linux/amd64 \
     --platform linux/arm64 \
     .
 
 # Recreate builder for clear local cache
 docker buildx rm cachebug || true
-docker buildx create --name cachebug --driver docker-container --driver-opt image=$REGISTRY/moby/buildkit:latest,network=host
+docker buildx create --name cachebug --driver docker-container --driver-opt image=$BUILDKIT_IMAGE,network=host
 docker buildx inspect cachebug --bootstrap
 
 # Create some changed file
-date > .build/changed.txt
+echo bar > .build/changed.txt
 
 # Run with cache-from only
 docker buildx build \
     --progress=plain \
     --builder cachebug \
-    --build-arg BASE=$REGISTRY/alpine:latest \
-    --cache-from type=registry,ref=$REGISTRY/cachebug:buildcache \
+    --build-arg BASE=$ALPINE \
+    --cache-from type=registry,ref=$CACHE \
     --platform linux/amd64 \
     --platform linux/arm64 \
     . 2>&1 | tee .build/build.log
