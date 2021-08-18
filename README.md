@@ -21,6 +21,8 @@ This repository contains scripts to one click reproduce https://github.com/moby/
 Wait for service on port: 5001
 84e8cda93df00d1687045555ef9e7416f14a84cd1a215d87f0af543c00ffbc2d
 Wait for service on port: 5002
+Check is build for multiple platform supported...
+Run tests...
 [1] FAIL
 [2] OK
 [3] OK
@@ -32,7 +34,9 @@ Wait for service on port: 5002
 [98] OK
 [99] FAIL
 [100] FAIL
+Cleanup docker images...
 cachebug_registry
 cachebug_proxy
+Show statistics...
 FAILED 65 OF 100
 ```
