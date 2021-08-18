@@ -17,12 +17,22 @@ This repository contains scripts to one click reproduce https://github.com/moby/
 # Sample output
 ```bash
 ./test.sh
+126c4f63c1152ad019dc3ef185079df0bb2dfa67cb28e9b0917838fe0fb05b52
+Wait for service on port: 5001
+84e8cda93df00d1687045555ef9e7416f14a84cd1a215d87f0af543c00ffbc2d
+Wait for service on port: 5002
 [1] FAIL
 [2] OK
 [3] OK
 [4] FAIL
 [5] FAIL
 ...
-
-
+[96] FAIL
+[97] FAIL
+[98] OK
+[99] FAIL
+[100] FAIL
+cachebug_registry
+cachebug_proxy
+FAILED 65 OF 100
 ```
